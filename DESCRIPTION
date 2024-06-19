@@ -1,0 +1,34 @@
+Package: GenomicLLM
+Title: Conversion of Genomic Data to LLM-Compatible Formats for Comparative Analysis
+Version: 0.0.0.9000
+Authors@R: 
+    person("Robin", "Gounder", , "robin@gounder.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0008-7755-7081"))
+Description: GenomicLLM facilitates the conversion of genomic data, such as 
+    methylation and acetylation measurements, into formats compatible with 
+    Large Language Models (LLMs) for comparative analysis. The package provides 
+    tools to aggregate, compare, and visualize multiple epigenetic features 
+    across genomic ranges, creating detailed input sequences for LLM training 
+    and testing. It supports various styles of data representation, ensuring 
+    flexibility and adaptability for different machine learning models. 
+    Additionally, it allows for splitting data into training and test sets, 
+    and supports integration with multiple genomic feature files. The package 
+    aims to bridge the gap between genomic data analysis and machine learning, 
+    enabling advanced pattern recognition and predictive modeling in genomics.
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Imports: 
+    data.table,
+    GenomicRanges,
+    S4Vectors,
+    jsonlite,
+    methods
+Suggests: 
+    testthat (>= 3.0.0),
+    rmarkdown,
+    knitr,
+    qpdf
+Config/testthat/edition: 3
+License: MIT + file LICENSE
+VignetteBuilder: knitr

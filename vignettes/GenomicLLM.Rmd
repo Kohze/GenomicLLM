@@ -1,0 +1,168 @@
+
+---
+title: "Introduction to GenomicLLM"
+author: "Robin Gounder"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to GenomicLLM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(GenomicLLM)
+library(data.table)
+
+# Create a sample BED file for the vignette
+bed_file <- tempfile(fileext = ".bed")
+# Create a sample BED file for the vignette
+bed_data <- "
+chr1    1000    1050    gene1    0    +    1000    1050    0    1    50    0    type1    10
+chr1    1500    1550    gene2    0    -    1500    1550    0    1    50    0    type2    20
+chr2    2000    2050    gene3    0    +    2000    2050    0    1    50    0    type3    30
+chr2    2500    2550    gene4    0    -    2500    2550    0    1    50    0    type4    40
+"
+writeLines(bed_data, bed_file)
+
+```
+
+### Full Vignette with Example
+
+---
+title: "Introduction to GenomicLLM"
+author: "Robin Gounder"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to GenomicLLM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r start, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(GenomicLLM)
+library(data.table)
+
+# Create a sample BED file for the vignette
+bed_file <- tempfile(fileext = ".bed")
+bed_data <- "
+chr1    1000    1050    gene1    0    +    1000    1050    0    1    50    0    type1    10
+chr1    1500    1550    gene2    0    -    1500    1550    0    1    50    0    type2    20
+chr2    2000    2050    gene3    0    +    2000    2050    0    1    50    0    type3    30
+chr2    2500    2550    gene4    0    -    2500    2550    0    1    50    0    type4    40
+"
+writeLines(bed_data, bed_file)
+```
+
+## Introduction
+
+`GenomicLLM` is a comprehensive package designed to transform genomic comparisons from feature data in GRanges objects into datasets ready for training language models (LLMs). This package leverages the power of S4 objects for robust data handling and provides functionality for aggregating feature data, converting it into various formats suitable for machine learning tasks, and performing genomic data comparisons.
+
+### Key Features
+
+- **Reading BED Files**: The `readFile` function reads BED files and creates `GRangesData` objects.
+- **Aggregating Feature Data**: The `aggregateFeature` function aggregates feature data for genomic comparisons.
+- **Converting to LLM Format**: The `toLLMFormat` function converts comparison data into JSON format suitable for LLM training.
+- **S4 Object Oriented Design**: Utilizes S4 objects for robust and scalable data management.
+
+## Reading BED Files
+
+The `readFile` function reads BED files and creates `GRangesData` objects, which encapsulate the genomic ranges and associated metadata.
+
+```{r example1, eval=TRUE}
+# Read the sample BED file
+gr_data <- readFile(bed_file)
+print(gr_data)
+```
+
+## Aggregating Feature Data
+
+The `aggregateFeature` function aggregates feature data, providing a comparison between two genomic conditions. It extends the ranges upstream by a specified number of base pairs and calculates average feature values.
+
+```{r example2, eval=TRUE}
+# Create another sample GRangesData object
+gr_data2 <- readFile(bed_file)
+metadata2 <- data.table(name = c("gene3", "gene4"), type = c("type3", "type4"), feature_level = c(30, 40))
+gr_data2 <- new("GRangesData", granges = gr_data@granges, metadata = metadata2)
+
+# Create a ComparisonData object
+comparison <- new("ComparisonData", condition1 = gr_data, condition2 = gr_data2, features = c("methylation"), ranges = "upstream", bp_window = 1000, output_consequence = "isoform_switch_consequence", system_prompt = "Analyze the following sequences:")
+
+# Aggregate feature data
+comparison <- aggregateFeature(comparison)
+print(comparison@results)
+```
+
+## Converting to LLM Format
+
+The toLLMFormat function converts the aggregated comparison data into JSON format, ready for LLM training. This function also allows for splitting the data into training and test sets, which is crucial for machine learning workflows.
+
+LLM Language Format Options
+The toLLMFormat function supports multiple language format styles for the output. Below is a table describing the available options along with examples of their output:
+
+
+```{r example3, eval=TRUE}
+# Convert comparison data to LLM format
+llm_data <- toLLMFormat(comparison, split_ratio = 0.8, style = "Bracket-Spacing")
+print(llm_data)
+```
+
+## Output Styles
+
+The `createFormattedInput` function supports various output styles:
+
+- **Bracket-Spacing**: This style includes spaces to indicate gaps between feature comparisons.
+
+  Example:
+  ```plaintext
+  [10, 20] {34} [30, 40]
+  ```
+
+- **Letter-Digit**: This style uses letters and digits to format the input, with spaces indicating gaps.
+
+  Example:
+  ```plaintext
+  A(10, 20) S(34) A(30, 40)
+  ```
+
+- **Simple-List**: This style formats the input as a simple list with spaces indicating gaps.
+
+  Example:
+  ```plaintext
+  [10, 20], {34} [30, 40]
+  ```
+
+- **Verbose**: This style provides a verbose description of the features and gaps.
+
+  Example:
+  ```plaintext
+  Feature1: 10, Feature2: 20, Gap: 34, Feature1: 30, Feature2: 40
+  ```
+
+
+
+## Biological Context
+
+In the context of genomic research, transforming feature data into formats suitable for training LLMs is crucial for various applications such as predicting gene expression, understanding isoform switches, and identifying regulatory elements. The ability to compare genomic conditions and format the results for machine learning models enables researchers to leverage advanced computational methods for biological discovery.
+
+### Test Split and Multiple Formats
+
+- **Test Split**: Dividing the data into training and test sets ensures that models can be evaluated on unseen data, providing a measure of their generalization performance.
+- **Multiple Output Formats**: Supporting various output formats allows flexibility in how data is presented and consumed by different machine learning frameworks and models.
+
+This vignette provides an overview of the `GenomicLLM` package, demonstrating its capabilities in reading, processing, and transforming genomic data for machine learning applications. The use of S4 objects ensures robust and scalable data management, making `GenomicLLM` a powerful tool for bioinformatics research.
+
+### Conclusion
+GenomicLLM provides a powerful suite of tools for transforming genomic feature data into formats suitable for training language models. Its use of S4 objects ensures robust data handling, and its functions are designed to facilitate genomic data comparisons and machine learning workflows. This package is particularly useful for bioinformaticians and researchers looking to leverage machine learning in genomic studies.
+
+### Future Work
+Future enhancements to GenomicLLM may include additional functionalities for more complex genomic data analyses and integration with other bioinformatics tools. Your contributions and feedback are welcome to make this package even more powerful and user-friendly.
