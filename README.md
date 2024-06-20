@@ -104,6 +104,23 @@ GenomicLLM supports multiple output styles for formatting data. Below are exampl
 | Letter-Digit      | `A(10,15) S(5) A(20,25) S(10) A(30,35) S(15) A(40,45)`                                             |
 | Verbose           | `Feature1: 10, Feature2: 15, Gap: 5 Feature1: 20, Feature2: 25, Gap: 10 Feature1: 30, Feature2: 35, Gap: 15 Feature1: 40, Feature2: 45, Gap: 20` |
 
+```R
+{ 
+  [
+    system: 'identify the isoform consequence of this sequence. Options: longer, shorter, same',
+    input: '[10, 15] {5} [20, 25] {10} [30, 35] {15} [40, 45]',
+    output: 'longer'
+  ]
+}
+```
+
+### LLM Training Follow UP
+
+- Pick a LLM training tool of choice: We recommend https://github.com/hiyouga/LLaMA-Factory
+- Upload the output .json to your huggingface repository
+- Train your model (e.g. Llama 3)
+- Utilize the masking functionality to discover feature attention and causal relations
+
 ## Contributing
 
 We welcome contributions from the community. If you find a bug or have a feature request, please open an issue on GitHub. If you would like to contribute code, please fork the repository and submit a pull request.
