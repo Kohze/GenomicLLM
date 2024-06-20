@@ -110,7 +110,8 @@ GenomicLLM supports multiple output styles for formatting data. Below are exampl
     system: 'identify the isoform consequence of this sequence. Options: longer, shorter, same',
     input: '[10, 15] {5} [20, 25] {10} [30, 35] {15} [40, 45]',
     output: 'longer'
-  ]
+  ],
+  ...
 }
 ```
 
