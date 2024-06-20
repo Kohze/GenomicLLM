@@ -1,6 +1,6 @@
 Package: GenomicLLM
 Title: Conversion of Genomic Data to LLM-Compatible Formats for Comparative Analysis
-Version: 0.0.0.9000
+Version: 0.99.0
 Authors@R: 
     person("Robin", "Gounder", , "robin@gounder.com", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0008-7755-7081"))
