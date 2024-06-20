@@ -104,15 +104,26 @@ GenomicLLM supports multiple output styles for formatting data. Below are exampl
 | Letter-Digit      | `A(10,15) S(5) A(20,25) S(10) A(30,35) S(15) A(40,45)`                                             |
 | Verbose           | `Feature1: 10, Feature2: 15, Gap: 5 Feature1: 20, Feature2: 25, Gap: 10 Feature1: 30, Feature2: 35, Gap: 15 Feature1: 40, Feature2: 45, Gap: 20` |
 
-```R
-{ 
-  [
-    system: 'identify the isoform consequence of this sequence. Options: longer, shorter, same',
-    input: '[10, 15] {5} [20, 25] {10} [30, 35] {15} [40, 45]',
-    output: 'longer'
-  ],
-  ...
-}
+```json
+
+[
+    {
+      "system": "Analyze the following isoform sequences:",
+      "input": "[10, 20] {30} [40, 50] {10} [60, 70]",
+      "output": "longer"
+    },
+    {
+      "system": "Analyze the following isoform sequences:",
+      "input": "[15, 25] {35} [45, 55] {15} [65, 75]",
+      "output": "shorter"
+    },
+    {
+      "system": "Analyze the following isoform sequences:",
+      "input": "[20, 30] {40} [50, 60] {20} [70, 80]",
+      "output": "same"
+    }
+]
+
 ```
 
 ### LLM Training Follow UP
